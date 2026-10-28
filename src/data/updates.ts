@@ -13,6 +13,18 @@ export interface UpdateEntry {
 
 export const updates: UpdateEntry[] = [
   {
+    version: "v2.10.0",
+    date: "October 28, 2026",
+    title: "A tooth chart that looks like the mouth",
+    kind: "feature",
+    items: [
+      { kind: "feature", text: "Switch the tooth chart between adult, mixed and child teeth, with A–T lettering for baby teeth in Universal numbering." },
+      { kind: "feature", text: "Each tooth now shows five surfaces and a root, so fillings, caries, crowns, root canals, implants and bridges are drawn where they are." },
+      { kind: "feature", text: "Record amalgam and composite fillings separately, plus extracted, congenitally missing, unerupted and impacted teeth." },
+      { kind: "feature", text: "Stamp mode: pick a finding like MOD caries, then tap teeth to chart it in one step." },
+    ],
+  },
+  {
     version: "v2.9.1",
     date: "October 28, 2026",
     title: "Invoice a procedure the moment it's done",

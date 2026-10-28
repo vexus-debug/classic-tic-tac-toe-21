@@ -45,6 +45,20 @@
     --destructive: 0 84% 56%;
     --destructive-foreground: 0 0% 100%;
 
+    /* Odontogram clinical tokens */
+    --chart-enamel: 40 30% 98%;
+    --chart-outline: 215 16% 62%;
+    --chart-root: 35 25% 90%;
+    --chart-caries: 0 72% 52%;
+    --chart-amalgam: 215 12% 48%;
+    --chart-composite: 45 55% 86%;
+    --chart-crown: 38 85% 55%;
+    --chart-endo: 22 90% 50%;
+    --chart-implant: 195 25% 55%;
+    --chart-fracture: 340 70% 55%;
+    --chart-veneer: 330 55% 75%;
+    --chart-planned: 210 85% 52%;
+
     --border: 214 20% 90%;
     --input: 214 20% 90%;
     --ring: 185 75% 30%;
@@ -135,6 +149,19 @@
 
     --destructive: 0 62% 42%;
     --destructive-foreground: 210 25% 94%;
+
+    --chart-enamel: 215 20% 22%;
+    --chart-outline: 215 14% 48%;
+    --chart-root: 215 18% 28%;
+    --chart-caries: 0 70% 58%;
+    --chart-amalgam: 215 10% 62%;
+    --chart-composite: 45 40% 70%;
+    --chart-crown: 38 80% 58%;
+    --chart-endo: 22 85% 58%;
+    --chart-implant: 195 30% 62%;
+    --chart-fracture: 340 65% 62%;
+    --chart-veneer: 330 50% 70%;
+    --chart-planned: 210 85% 62%;
 
     --border: 215 28% 18%;
     --input: 215 28% 18%;

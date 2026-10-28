@@ -14,9 +14,28 @@ export function fdiToUniversal(fdi: number): number | null {
   return null;
 }
 
-export function toothLabel(fdi: number, notation: Notation): string {
-  return notation === "fdi" ? String(fdi) : String(fdiToUniversal(fdi) ?? fdi);
+/** FDI primary (51–85) → Universal letters A–T. */
+export function fdiPrimaryToUniversal(fdi: number): string | null {
+  const q = Math.floor(fdi / 10);
+  const p = fdi % 10;
+  if (p < 1 || p > 5) return null;
+  const L = "ABCDEFGHIJKLMNOPQRST";
+  if (q === 5) return L[5 - p]; // 55→A … 51→E
+  if (q === 6) return L[4 + p]; // 61→F … 65→J
+  if (q === 7) return L[15 - p]; // 75→K … 71→O
+  if (q === 8) return L[14 + p]; // 81→P … 85→T
+  return null;
 }
+
+export const isPrimaryTooth = (fdi: number) => Math.floor(fdi / 10) >= 5;
+
+export function toothLabel(fdi: number, notation: Notation): string {
+  if (notation === "fdi") return String(fdi);
+  return isPrimaryTooth(fdi) ? (fdiPrimaryToUniversal(fdi) ?? String(fdi)) : String(fdiToUniversal(fdi) ?? fdi);
+}
+
+/** Permanent successor of a primary tooth (e.g. 55 → 15). */
+export const successorOf = (fdi: number) => (Math.floor(fdi / 10) - 4) * 10 + (fdi % 10);
 
 export const PHASES = [
   { id: 1, title: "Phase 1 · Urgent / Pain relief" },
