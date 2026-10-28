@@ -13,6 +13,16 @@ export interface UpdateEntry {
 
 export const updates: UpdateEntry[] = [
   {
+    version: "v2.9.1",
+    date: "October 28, 2026",
+    title: "Invoice a procedure the moment it's done",
+    kind: "feature",
+    items: [
+      { kind: "feature", text: "Ticking a treatment-plan procedure as done now offers to generate its invoice, with the procedure, tooth and fee filled in." },
+      { kind: "improvement", text: "Choose \"Mark done only\" for prepaid or batched procedures." },
+    ],
+  },
+  {
     version: "v2.9.0",
     date: "October 28, 2026",
     title: "Tooth chart and phased plans on the patient record",
