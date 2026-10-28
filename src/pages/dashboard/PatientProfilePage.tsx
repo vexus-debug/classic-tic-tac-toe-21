@@ -21,7 +21,7 @@ import { EditPatientDialog } from "@/components/dashboard/EditPatientDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useOrg } from "@/hooks/useOrg";
 import { hasPageAccess } from "@/config/roleAccess";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -110,6 +110,8 @@ export default function PatientProfilePage() {
 
   const [editOpen, setEditOpen] = useState(false);
   const [invoiceOpen, setInvoiceOpen] = useState(false);
+  const [invoiceLines, setInvoiceLines] = useState<{ key: string; treatmentId?: string | null; description: string; unitPrice: number; quantity?: number }[] | undefined>(undefined);
+  const [completeItem, setCompleteItem] = useState<any>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
   const [prescriptionOpen, setPrescriptionOpen] = useState(false);
   const [labCaseOpen, setLabCaseOpen] = useState(false);
@@ -515,7 +517,7 @@ export default function PatientProfilePage() {
                             return (
                               <li key={it.id} className="flex items-center gap-2 px-3 py-2 text-sm">
                                 <input type="checkbox" checked={done} disabled={!canEditClinical || updateItemStatus.isPending}
-                                  onChange={() => updateItemStatus.mutate({ id: it.id, status: done ? "pending" : "completed" })}
+                                  onChange={() => done ? updateItemStatus.mutate({ id: it.id, status: "pending" }) : setCompleteItem(it)}
                                   aria-label={`Mark ${it.description} ${done ? "not done" : "done"}`} className="h-4 w-4 accent-primary" />
                                 <span className={`flex-1 min-w-0 ${done ? "line-through text-muted-foreground" : ""}`}>
                                   {it.description}
@@ -842,7 +844,40 @@ export default function PatientProfilePage() {
 
       <EditPatientDialog patient={patient} open={editOpen} onOpenChange={setEditOpen} />
 
-      <CreateInvoiceDialog open={invoiceOpen} onOpenChange={setInvoiceOpen} preselectedPatientId={patientId} />
+      <CreateInvoiceDialog open={invoiceOpen} onOpenChange={(o) => { setInvoiceOpen(o); if (!o) setInvoiceLines(undefined); }} preselectedPatientId={patientId} preselectedLines={invoiceLines} />
+      <Dialog open={!!completeItem} onOpenChange={(o) => { if (!o) setCompleteItem(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Procedure completed</DialogTitle>
+            <DialogDescription>
+              {canBill
+                ? <>Generate invoice for <span className="font-medium text-foreground">{completeItem?.description}{completeItem?.tooth_number ? ` (tooth ${completeItem.tooth_number})` : ""}</span> ({formatCurrency(Number(completeItem?.estimated_cost || 0))})?</>
+                : <>Mark <span className="font-medium text-foreground">{completeItem?.description}</span> as done? Billing staff will invoice it.</>}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => {
+              const it = completeItem; setCompleteItem(null);
+              if (it) updateItemStatus.mutate({ id: it.id, status: "completed" });
+            }}>Mark done only</Button>
+            {canBill && (
+              <Button onClick={() => {
+                const it = completeItem; setCompleteItem(null);
+                if (!it) return;
+                updateItemStatus.mutate({ id: it.id, status: "completed" });
+                setInvoiceLines([{
+                  key: it.id,
+                  treatmentId: it.treatment_id ?? null,
+                  description: it.tooth_number ? `${it.description} — tooth ${it.tooth_number}` : it.description,
+                  unitPrice: Number(it.estimated_cost || 0),
+                  quantity: 1,
+                }]);
+                setInvoiceOpen(true);
+              }}>Generate invoice</Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <InvoiceDetailDialog open={!!selectedInvoice} onOpenChange={(open) => { if (!open) setSelectedInvoice(null); }} invoice={selectedInvoice} />
       <BookAppointmentDialog open={bookOpen} onOpenChange={setBookOpen} preselectedPatientId={patientId} />
       <CreatePrescriptionDialog open={prescriptionOpen} onOpenChange={setPrescriptionOpen} preselectedPatientId={patientId} />
